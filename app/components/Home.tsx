@@ -23,7 +23,7 @@ export default function Home(): JSX.Element {
   
   const onClickHandle = () => {
     console.log(ipcRenderer)
-    ipcRenderer.send('test-channel', {url: url})
+    ipcRenderer.send('open-web', {url: url})
   }
 
   return (
@@ -66,7 +66,8 @@ export default function Home(): JSX.Element {
       <div>
         <button onClick={onClickHandle}>url 입력</button>
       </div>
-    
+      <webview ng-style="style" id="content" src="http://www.tutorialbook.co.kr" autosize={true} allowpopups></webview>
+
     </div>
   );
 }

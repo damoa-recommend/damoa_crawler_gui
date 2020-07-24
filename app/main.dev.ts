@@ -9,10 +9,24 @@
  * `./app/main.prod.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, BrowserView, ipcMain } from 'electron';
+import { app, BrowserWindow, BrowserView, ipcMain, webContents } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
+
+import express from 'express'
+
+const a = express()
+const port = 3000
+
+a.get('/', (req: any, res:any) => {
+  console.log(req.query)
+  console.log(req.params)
+  console.log(req.body)
+  res.send('Hello World!')
+})
+
+a.listen(port, () => console.log(`Example app listening at http://localhost:${port}`))
 
 export default class AppUpdater {
   constructor() {
@@ -130,21 +144,46 @@ app.on('activate', () => {
   if (mainWindow === null) createWindow();  
 });
 
-ipcMain.on('test-channel', (event, arg) => {
-  console.log(arg) // "ping" 출력
-  console.log(event) // "ping" 출력
+ipcMain.on('open-web', (event, arg) => {
+
   event.returnValue = 'pong'
   if (!mainWindow) {
     return
   }
   let child = new BrowserView({
     webPreferences: {
-      nodeIntegration: false
+      nodeIntegration: false,
+      preload: './preload.js'
     }
   })
   mainWindow && mainWindow.setBrowserView(child)
   child.setBounds({ x: 40, y: 300, width: 1024, height: 428 })
-  child.webContents.loadURL(arg.url)
+  child.webContents.loadURL(arg.url || 'https://www.naver.com')
   
-  child.webContents.executeJavaScript('alert("hello world")')
+  child.webContents.openDevTools()
+  child.webContents.executeJavaScript(`
+    console.log('execute Javascript');
+
+    const body = document.querySelector('body');
+
+    body.addEventListener('click', event => {
+      console.log(event);
+      console.log(event.detail);
+      alert('클릭 수: ' + event.detail);
+      const xhttp = new XMLHttpRequest();
+      xhttp.open("GET", "http://127.0.0.1:3000?d="+new Date().toString()+"", true);
+      xhttp.send();
+      try {
+
+        sendToElectron('query', event.detail);
+      } catch (err)  {
+        console.log(err)
+      }
+    });
+  `, true)
+
 })
+
+ipcMain.on('query', function (event, value) {
+  console.log(value);
+});
