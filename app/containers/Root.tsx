@@ -5,13 +5,11 @@ import { hot } from 'react-hot-loader/root';
 import { History } from 'history';
 import { Store } from '../store';
 import Routes from '../Routes';
-import { Layout, Menu } from 'antd';
-
-
+import { Layout } from 'antd';
 
 import LeftNav from '../components/layout/LeftNav'
 
-const { Content, Footer } = Layout;
+const { Content } = Layout;
 
 type Props = {
   store: Store;

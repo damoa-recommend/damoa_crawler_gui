@@ -1,6 +1,6 @@
 import React from 'react';
-import Home from '../components/Home';
+import Analisys from '../features/analisys/Analisys';
 
 export default function AnalisysPage() {
-  return <Home />;
+  return <Analisys />;
 }

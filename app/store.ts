@@ -20,7 +20,7 @@ const shouldIncludeLogger = !excludeLoggerEnvs.includes(
 
 if (shouldIncludeLogger) {
   const logger = createLogger({
-    level: 'info',
+    level: 'debug',
     collapsed: true,
   });
   middleware.push(logger);
