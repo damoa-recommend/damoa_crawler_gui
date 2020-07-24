@@ -1,10 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ipcRenderer } from 'electron'
 
 import routes from '../constants/routes.json';
-
 import styles from './Home.css';
+
+import {
+  PlusCircleOutlined,
+  SettingOutlined
+} from '@ant-design/icons'
+
+import { Card } from 'antd';
+
+
 
 export default function Home(): JSX.Element {
   let [ url, seturl ] = useState('')
@@ -20,17 +28,45 @@ export default function Home(): JSX.Element {
 
   return (
     <div className={styles.container} data-tid="container">
-      <h2>Home</h2>
-      <Link to={routes.COUNTER}>to Counter</Link>
       <div>
-        <input type="text" value={url} onChange={onChangeHendle} />
+        <h2>
+          <span>Crawler Information</span>
+          <span style={{marginLeft: 6}}>
+            <PlusCircleOutlined style={{fontSize: 24, cursor: 'pointer'}}/>
+          </span>
+          <span style={{marginLeft: 6}}>
+            <SettingOutlined style={{fontSize: 24, cursor: 'pointer'}}/>
+          </span>
+        </h2>
+
       </div>
-      <button onClick={onClickHandle}>c</button>
-      {/* <iframe 
-        id="webview"
-        src="https://www.naver.com" 
-        style={{width: '400px%', height: '300px', display: 'inline-flex'}}
-      /> */}
+
+      <div>
+        <Card 
+          title="Site 1" 
+          extra={<Link to="/">More</Link>} 
+          style={{ width: 300, display: 'inline-block', margin: 15 }}
+        >
+          <p>이름: Site 1</p>
+          <p>설명: A, B, C 데이터 수집</p>
+          <p>날짜: {new Date().toString()}</p>
+        </Card>
+        <Card 
+          // size="small" 
+          title="Site 2" 
+          extra={<Link to="/">More</Link>} 
+          style={{ width: 300, display: 'inline-block', margin: 15 }}
+        >
+          <p>이름: Site 2</p>
+          <p>설명: A, B, C 데이터 수집</p>
+          <p>날짜: {new Date().toString()}</p>
+        </Card>
+      </div>
+
+      <div>
+        <button onClick={onClickHandle}>url 입력</button>
+      </div>
+    
     </div>
   );
 }

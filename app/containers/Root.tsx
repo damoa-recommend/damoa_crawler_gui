@@ -5,6 +5,13 @@ import { hot } from 'react-hot-loader/root';
 import { History } from 'history';
 import { Store } from '../store';
 import Routes from '../Routes';
+import { Layout, Menu } from 'antd';
+
+
+
+import LeftNav from '../components/layout/LeftNav'
+
+const { Content, Footer } = Layout;
 
 type Props = {
   store: Store;
@@ -13,9 +20,17 @@ type Props = {
 
 const Root = ({ store, history }: Props) => (
   <Provider store={store}>
-    <ConnectedRouter history={history}>
-      <Routes />
-    </ConnectedRouter>
+    <Layout>
+      <ConnectedRouter history={history}>
+        <LeftNav />
+        <Layout className="site-layout" style={{ marginLeft: 50 }}>
+          < Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
+            <Routes />
+          </Content >
+          {/* <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer> */}
+        </Layout>
+      </ConnectedRouter>
+    </Layout>
   </Provider>
 );
 

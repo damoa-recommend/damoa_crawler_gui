@@ -143,7 +143,7 @@ ipcMain.on('test-channel', (event, arg) => {
     }
   })
   mainWindow && mainWindow.setBrowserView(child)
-  child.setBounds({ x: 0, y: 300, width: 1024, height: 428 })
+  child.setBounds({ x: 40, y: 300, width: 1024, height: 428 })
   child.webContents.loadURL(arg.url)
   
   child.webContents.executeJavaScript('alert("hello world")')
