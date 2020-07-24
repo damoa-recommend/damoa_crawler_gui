@@ -153,7 +153,7 @@ ipcMain.on('open-web', (event, arg) => {
   let child = new BrowserView({
     webPreferences: {
       nodeIntegration: false,
-      preload: './preload.js'
+      preload: `${__dirname}/preload.js`
     }
   })
   mainWindow && mainWindow.setBrowserView(child)
@@ -174,7 +174,7 @@ ipcMain.on('open-web', (event, arg) => {
       xhttp.open("GET", "http://127.0.0.1:3000?d="+new Date().toString()+"", true);
       xhttp.send();
       try {
-
+        console.log(window)
         sendToElectron('query', event.detail);
       } catch (err)  {
         console.log(err)

@@ -66,7 +66,7 @@ export default function Home(): JSX.Element {
       <div>
         <button onClick={onClickHandle}>url 입력</button>
       </div>
-      <webview ng-style="style" id="content" src="http://www.tutorialbook.co.kr" autosize={true} allowpopups></webview>
+      <webview ng-style="style" id="content" src="http://www.tutorialbook.co.kr" autosize={true} allowpopups={true}></webview>
 
     </div>
   );
