@@ -2,36 +2,31 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ipcRenderer } from 'electron'
 
-import routes from '../constants/routes.json';
-import styles from './Home.css';
-
+import { Card } from 'antd';
 import {
   PlusCircleOutlined,
   SettingOutlined
 } from '@ant-design/icons'
+import styles from './Home.css';
 
-import { Card } from 'antd';
-
+import routes from '../constants/routes.json';
+import Connection from './modal/Connection'
 
 
 export default function Home(): JSX.Element {
-  let [ url, seturl ] = useState('')
-
-  const onChangeHendle = (e: {target: {value: string}}) => {
-    seturl(e.target.value)
-  }
-  
+  let [ visible, setVisible ] = useState(false)
   const onClickHandle = () => {
     console.log(ipcRenderer)
-    ipcRenderer.send('open-web', {url: url})
+    ipcRenderer.send('open-web', {url: 'test'})
   }
 
   return (
     <div className={styles.container} data-tid="container">
+      <Connection visible={visible} setVisible={setVisible} />
       <div>
         <h2>
           <span>Crawler Information</span>
-          <span style={{marginLeft: 6}}>
+          <span style={{marginLeft: 6}} onClick={() => setVisible(true)}>
             <PlusCircleOutlined style={{fontSize: 24, cursor: 'pointer'}}/>
           </span>
           <span style={{marginLeft: 6}}>
