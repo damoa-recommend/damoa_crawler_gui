@@ -3,7 +3,11 @@ import { AppThunk, RootState } from '..';
 
 const siteSlice = createSlice({
   name: 'site',
-  initialState: [],
+  initialState: [{
+    url: 'http://www.naver.com',
+    name: 'naver',
+    desc: 'naver desc'
+  }],
   reducers: {
     add: (state, action) => {
       try {

@@ -1,10 +1,11 @@
-import { configureStore, getDefaultMiddleware, Action } from '@reduxjs/toolkit';
+import { configureStore, getDefaultMiddleware, Action, compose } from '@reduxjs/toolkit';
 import { createHashHistory } from 'history';
 import { routerMiddleware } from 'connected-react-router';
 import { createLogger } from 'redux-logger';
 import { ThunkAction } from 'redux-thunk';
 // eslint-disable-next-line import/no-cycle
 import createRootReducer from './rootReducer';
+// import { composeWithDevTools } from "redux-devtools-extension/developmentOnly";
 
 export const history = createHashHistory();
 const rootReducer = createRootReducer(history);
@@ -20,7 +21,7 @@ const shouldIncludeLogger = !excludeLoggerEnvs.includes(
 
 if (shouldIncludeLogger) {
   const logger = createLogger({
-    level: 'debug',
+    level: 'info',
     collapsed: true,
   });
   middleware.push(logger);
@@ -32,6 +33,7 @@ export const configuredStore = (initialState?: RootState) => {
     reducer: rootReducer,
     middleware,
     preloadedState: initialState,
+    devTools: true
   });
 
   if (process.env.NODE_ENV === 'development' && module.hot) {

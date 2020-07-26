@@ -26,7 +26,7 @@ export default function LeftNav(): JSX.Element {
       >
         <Menu theme="dark" defaultSelectedKeys={['1']}>
           <Menu.Item key="1" icon={<Link to={routes.HOME} ><AppstoreOutlined style={{fontSize: 24}} /></Link> }> </Menu.Item>
-          <Menu.Item key="2" icon={<Link to={routes.ANALISYS} ><BarChartOutlined style={{fontSize: 24}}/> </Link>}> </Menu.Item>
+          <Menu.Item key="2" icon={<Link to='/analisys' ><BarChartOutlined style={{fontSize: 24}}/> </Link>}> </Menu.Item>
         </Menu>
     </div>
     </Layout>

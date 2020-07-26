@@ -50,7 +50,7 @@ export default function Home(): JSX.Element {
           sites.map((site: {url: string, name: string, desc: string}, idx: number) => (
             <Card 
               title={site.name} 
-              extra={<Link to="/">More</Link>} 
+              extra={<Link to={`/analisys/${idx}`}>More</Link>} 
               style={{ width: 300, display: 'inline-block', margin: 15 }}
               key={idx}
             >
@@ -76,7 +76,7 @@ export default function Home(): JSX.Element {
       <div>
         <button onClick={onClickHandle}>url 입력</button>
       </div>
-      <webview ng-style="style" id="content" src="http://www.tutorialbook.co.kr" autosize={true} allowpopups={true}></webview>
+      {/* <webview ng-style="style" id="content" src="http://www.tutorialbook.co.kr" autosize={true} allowpopups={true}></webview> */}
 
     </div>
   );

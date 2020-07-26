@@ -9,6 +9,7 @@
  * `./app/main.prod.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
+import os from 'os'
 import { app, BrowserWindow, BrowserView, ipcMain, webContents } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
@@ -37,6 +38,9 @@ export default class AppUpdater {
 }
 
 let mainWindow: BrowserWindow | null = null;
+let mainWindowEventObj:any = null
+
+let child:BrowserView | null = null;
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -61,6 +65,8 @@ const installExtensions = async () => {
 };
 
 const createWindow = async () => {
+  console.log(`MODE_ENV: ${process.env.NODE_ENV}`)
+  console.log(`DEBUG_PROD: ${process.env.DEBUG_PROD}`)
   if (
     process.env.NODE_ENV === 'development' ||
     process.env.DEBUG_PROD === 'true'
@@ -84,8 +90,10 @@ const createWindow = async () => {
           },
   });
 
+  // BrowserWindow.addDevToolsExtension(
+  //   path.join(os.homedir(), '/Library/Application Support/Google/Chrome/Default/Extensions/lmhkpmbekcpmknklioeibfkpmmfibljd/2.17.0_0')
+  // )
   mainWindow.loadURL(`file://${__dirname}/app.html`);
-
   // @TODO: Use 'ready-to-show' event
   //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event
   mainWindow.webContents.on('did-finish-load', () => {
@@ -108,8 +116,13 @@ const createWindow = async () => {
       // child.setBounds({ x: 0, y: 300, width: 1024, height: 428 })
       // child.webContents.loadURL('https://electronjs.org')
     }
-
   });
+
+
+  mainWindow.on('will-resize', (e, v) => {
+    if(!child) return
+    child.setBounds({ x: 50, y: 400, width: v.width-50, height: v.height-400 })
+  })
 
   mainWindow.on('closed', () => {
     mainWindow = null;
@@ -145,45 +158,82 @@ app.on('activate', () => {
 });
 
 ipcMain.on('open-web', (event, arg) => {
-
-  event.returnValue = 'pong'
+  mainWindowEventObj = event.sender
+  // event.returnValue = 'pong'
   if (!mainWindow) {
     return
   }
-  let child = new BrowserView({
+  child = new BrowserView({
     webPreferences: {
       nodeIntegration: false,
       preload: `${__dirname}/preload.js`
     }
   })
   mainWindow && mainWindow.setBrowserView(child)
-  child.setBounds({ x: 40, y: 300, width: 1024, height: 428 })
+  let width =1024
+  let height =500
+
+  child.setBounds({ x: 50, y: 400, width: width-50, height })
+ 
   child.webContents.loadURL(arg.url || 'https://www.naver.com')
   
-  child.webContents.openDevTools()
+  // child.webContents.openDevTools()
   child.webContents.executeJavaScript(`
-    console.log('execute Javascript');
-
-    const body = document.querySelector('body');
-
-    body.addEventListener('click', event => {
-      console.log(event);
-      console.log(event.detail);
-      alert('클릭 수: ' + event.detail);
-      const xhttp = new XMLHttpRequest();
-      xhttp.open("GET", "http://127.0.0.1:3000?d="+new Date().toString()+"", true);
-      xhttp.send();
-      try {
-        console.log(window)
-        sendToElectron('query', event.detail);
-      } catch (err)  {
-        console.log(err)
+    var cssPath = function(el) {
+      if (!(el instanceof Element)) 
+          return;
+      var path = [];
+      while (el.nodeType === Node.ELEMENT_NODE) {
+          var selector = el.nodeName.toLowerCase();
+          if (el.id) {
+              selector += '#' + el.id;
+              path.unshift(selector);
+              break;
+          } else {
+              var sib = el, nth = 1;
+              while (sib = sib.previousElementSibling) {
+                  if (sib.nodeName.toLowerCase() == selector)
+                    nth++;
+              }
+              if (nth != 1)
+                  selector += ":nth-of-type("+nth+")";
+          }
+          path.unshift(selector);
+          el = el.parentNode;
       }
-    });
+      return path.join(" > ");
+    }
+
+    document.addEventListener('mouseover', (e) => {
+      // console.log(e.toElement); 
+      // console.log(e.target); 
+      // console.log(e.srcElement); 
+      // console.log(e.path)
+      e.target.style.border = "1px solid red";
+      e.target.addEventListener('mouseout', e => {
+        e.target.style.border = "0";
+      })
+      e.target.addEventListener('click', clickE => {
+        // e.target.style.border = "0";
+        console.log(clickE)
+        clickE.preventDefault()
+        clickE.stopPropagation()
+        try {
+          sendToElectron('query', {
+            // target: e.target,
+            // path: e.path
+            target: cssPath(e.target),
+            path: e.path.map(path => cssPath(e.path))
+          });
+        } catch (err) {
+          console.log(err)
+        }
+      })
+    })
   `, true)
 
 })
 
 ipcMain.on('query', function (event, value) {
-  console.log(value);
+  mainWindowEventObj.send('selectDom', value)
 });

@@ -23,7 +23,7 @@ export default function Routes() {
     <App>
       <Switch>
         <Route exact path={routes.HOME} component={HomePage} />
-        <Route exact path={routes.ANALISYS} component={AnalisysPage} />
+        <Route path={routes.ANALISYS} component={AnalisysPage} />
         <Route exact path={routes.COUNTER} component={CounterPage} />
       </Switch>
     </App>

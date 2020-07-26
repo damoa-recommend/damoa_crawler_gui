@@ -1,5 +1,5 @@
 {
   "HOME": "/",
   "COUNTER": "/counter",
-  "ANALISYS": "/analisys"
+  "ANALISYS": "/analisys/:site"
 }
