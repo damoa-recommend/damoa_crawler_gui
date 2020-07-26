@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import {
   Modal, Form, Input,
   Row, Col, Select,
@@ -6,6 +7,7 @@ import {
 } from 'antd';
 
 import axios from 'axios'
+import { addSite } from '../../store/modules/sitesSlice'
 
 const { Option } = Select;
 
@@ -18,6 +20,8 @@ export default function Connection(props: any): JSX.Element {
 
   let [loading, setLoading] = useState(false)
 
+  const dispatch = useDispatch();
+
   const handleOk = async () => {
     setLoading(true)
     let timestamp = new Date().getTime()
@@ -27,6 +31,12 @@ export default function Connection(props: any): JSX.Element {
     try {
       let response = await axios.get(`${beforeUrl}${url}${afterUrl}`)
       message.success( {content: 'Connection Success', key: timestamp})
+      
+      dispatch(addSite({
+        url: `${beforeUrl}${url}${afterUrl}`, 
+        name: name, 
+        desc: desc
+      }))
     } catch (err) {
       message.error( {content: 'Connection Fail', key: timestamp})
     }

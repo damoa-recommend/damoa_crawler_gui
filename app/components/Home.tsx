@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom';
 import { ipcRenderer } from 'electron'
 
@@ -12,9 +13,17 @@ import styles from './Home.css';
 import routes from '../constants/routes.json';
 import Connection from './modal/Connection'
 
+import { selectSite } from '../store/modules/sitesSlice'
 
 export default function Home(): JSX.Element {
   let [ visible, setVisible ] = useState(false)
+
+  let sites = useSelector(selectSite)
+
+  useEffect(() => {
+    console.log(sites)
+  }, [sites])
+
   const onClickHandle = () => {
     console.log(ipcRenderer)
     ipcRenderer.send('open-web', {url: 'test'})
@@ -37,16 +46,22 @@ export default function Home(): JSX.Element {
       </div>
 
       <div>
-        <Card 
-          title="Site 1" 
-          extra={<Link to="/">More</Link>} 
-          style={{ width: 300, display: 'inline-block', margin: 15 }}
-        >
-          <p>이름: Site 1</p>
-          <p>설명: A, B, C 데이터 수집</p>
-          <p>날짜: {new Date().toString()}</p>
-        </Card>
-        <Card 
+        {
+          sites.map((site: {url: string, name: string, desc: string}, idx: number) => (
+            <Card 
+              title={site.name} 
+              extra={<Link to="/">More</Link>} 
+              style={{ width: 300, display: 'inline-block', margin: 15 }}
+              key={idx}
+            >
+              <p>이름: {site.name}</p>
+              <p>설명: {site.desc}</p>
+              <p>링크: {site.url}</p>
+              <p>날짜: {new Date().toString()}</p>
+            </Card>
+          ))
+        }
+        {/* <Card 
           // size="small" 
           title="Site 2" 
           extra={<Link to="/">More</Link>} 
@@ -55,7 +70,7 @@ export default function Home(): JSX.Element {
           <p>이름: Site 2</p>
           <p>설명: A, B, C 데이터 수집</p>
           <p>날짜: {new Date().toString()}</p>
-        </Card>
+        </Card> */}
       </div>
 
       <div>
