@@ -4,10 +4,18 @@ import { useSelector } from 'react-redux'
 import { selectSite } from '../../store/modules/sitesSlice'
 import { ipcRenderer } from 'electron'
 
+import { CustomPicker } from 'react-color';
+import { Divider } from 'antd';
+import {
+  HomeOutlined,
+  BarChartOutlined,
+} from '@ant-design/icons';
+
 export default function Analisys({match, history}) {
   let [siteIdx, setSiteIdx] = useState(match?.params?.site)
   let [ domStructure, setDomStructure] = useState([])
-
+  let [ formHeight, setFormHeight ] = useState(window.innerHeight-(500+140))
+  
   if (siteIdx === undefined || siteIdx === null) {
     history.push('/')
   }
@@ -28,14 +36,16 @@ export default function Analisys({match, history}) {
       if (!doms.length) {
         doms.push({
           label: 'testColumn',
-          cssSelector: value.target
+          cssSelector: value.target,
+          color: '#ffffff'
         })
         setDomStructure(doms)
       }
       if (doms.length && doms[doms.length - 1].cssSelector !== value.target)  {
         doms.push({
           label: 'testColumn',
-          cssSelector: value.target
+          cssSelector: value.target,
+          color: '#ff0000'
         })
         setDomStructure(doms)
       } 
@@ -47,23 +57,39 @@ export default function Analisys({match, history}) {
     }
   }, [getDomStructure()])
 
-  return (
-    <div>
-      <h2>구조분석</h2>
-      <div>
-        <h4>name: {sites[siteIdx].name}</h4>
-        <h4>url: {sites[siteIdx].url}</h4>
-        <h4>desc: {sites[siteIdx].desc}</h4>
-      </div>
+  const colorChangeHandle = (idx, color) => {
+    let a = [...domStructure]
+    a[idx].color = color
+    setDomStructure(a)
+  }
 
+  return (
+    <div style={{overflowY: 'scroll', height: formHeight}}>
       <div>
+        <span><h2 style={{display: 'inline-block'}}>구조분석</h2></span>
+        <span><h4 style={{display: 'inline-block'}}><HomeOutlined />{" "}{sites[siteIdx].url}</h4></span>
+      </div>
+      
+      <div className="form">
         {domStructure.map((d, idx) => (
           <div key={idx}>
+            <Divider 
+              style={{color: 'black', borderTop: `1px solid ${d.color}`}} 
+              orientation="left"
+            > </Divider>
+            
             <h5>
-              라벨: {d.label}
+              이름: {d.label}
             </h5>
             <h5>
               CSS SELECTOR : {d.cssSelector}
+            </h5>
+            <h5>
+              <input 
+                type="color" 
+                value={d.color}
+                onChange={(e) => colorChangeHandle(idx, e.target.value)}
+              />
             </h5>
           </div>
         ))}

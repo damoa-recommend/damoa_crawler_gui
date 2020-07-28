@@ -177,7 +177,7 @@ ipcMain.on('open-web', (event, arg) => {
  
   child.webContents.loadURL(arg.url || 'https://www.naver.com')
   
-  // child.webContents.openDevTools()
+  child.webContents.openDevTools()
   child.webContents.executeJavaScript(`
     var cssPath = function(el) {
       if (!(el instanceof Element)) 
@@ -209,22 +209,39 @@ ipcMain.on('open-web', (event, arg) => {
       // console.log(e.target); 
       // console.log(e.srcElement); 
       // console.log(e.path)
-      e.target.style.border = "1px solid red";
-      e.target.addEventListener('mouseout', e => {
-        e.target.style.border = "0";
+
+      let isClicked = e.target.classList.contains('clicked-dom')
+      if(!isClicked) {
+        e.target.style.border = "1px solid red";
+      }
+
+      e.target.addEventListener('mouseout', overE => {
+        let isClicked = overE.target.classList.contains('clicked-dom')
+        console.log('mouseout', overE.target)
+        console.log('mouseout', overE.target.classList)
+        if (!isClicked) {
+          overE.target.style.border = "0"
+        }
       })
       e.target.addEventListener('click', clickE => {
-        // e.target.style.border = "0";
-        console.log(clickE)
+        console.log('click', clickE)
+        clickE.target.style.border = "2px solid blue";
+        try{
+
+          clickE.target.classList.add('clicked-dom')
+        } catch (err) {
+          console.log(err)
+        }
+
         clickE.preventDefault()
         clickE.stopPropagation()
         try {
-          sendToElectron('query', {
-            // target: e.target,
-            // path: e.path
-            target: cssPath(e.target),
-            path: e.path.map(path => cssPath(e.path))
-          });
+          // sendToElectron('query', {
+          //   // target: e.target,
+          //   // path: e.path
+          //   target: cssPath(e.target),
+          //   path: e.path.map(path => cssPath(e.path))
+          // });
         } catch (err) {
           console.log(err)
         }
