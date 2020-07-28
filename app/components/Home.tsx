@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom';
-import { ipcRenderer } from 'electron'
 
 import { Card } from 'antd';
 import {
@@ -19,15 +18,6 @@ export default function Home(): JSX.Element {
   let [ visible, setVisible ] = useState(false)
 
   let sites = useSelector(selectSite)
-
-  useEffect(() => {
-    console.log(sites)
-  }, [sites])
-
-  const onClickHandle = () => {
-    console.log(ipcRenderer)
-    ipcRenderer.send('open-web', {url: 'test'})
-  }
 
   return (
     <div className={styles.container} data-tid="container">
@@ -61,23 +51,7 @@ export default function Home(): JSX.Element {
             </Card>
           ))
         }
-        {/* <Card 
-          // size="small" 
-          title="Site 2" 
-          extra={<Link to="/">More</Link>} 
-          style={{ width: 300, display: 'inline-block', margin: 15 }}
-        >
-          <p>이름: Site 2</p>
-          <p>설명: A, B, C 데이터 수집</p>
-          <p>날짜: {new Date().toString()}</p>
-        </Card> */}
       </div>
-
-      <div>
-        <button onClick={onClickHandle}>url 입력</button>
-      </div>
-      {/* <webview ng-style="style" id="content" src="http://www.tutorialbook.co.kr" autosize={true} allowpopups={true}></webview> */}
-
     </div>
   );
 }
