@@ -18,7 +18,7 @@ import MenuBuilder from './menu';
 import express from 'express'
 
 const a = express()
-const port = 3000
+const port = 3001
 
 a.get('/', (req: any, res:any) => {
   console.log(req.query)
@@ -41,6 +41,7 @@ let mainWindow: BrowserWindow | null = null;
 let mainWindowEventObj:any = null
 
 let child:BrowserView | null = null;
+let childEventObj:any = null;
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -217,31 +218,23 @@ ipcMain.on('open-web', (event, arg) => {
 
       e.target.addEventListener('mouseout', overE => {
         let isClicked = overE.target.classList.contains('clicked-dom')
-        console.log('mouseout', overE.target)
-        console.log('mouseout', overE.target.classList)
         if (!isClicked) {
           overE.target.style.border = "0"
         }
       })
       e.target.addEventListener('click', clickE => {
-        console.log('click', clickE)
         clickE.target.style.border = "2px solid blue";
-        try{
-
-          clickE.target.classList.add('clicked-dom')
-        } catch (err) {
-          console.log(err)
-        }
+        clickE.target.classList.add('clicked-dom')
 
         clickE.preventDefault()
         clickE.stopPropagation()
         try {
-          // sendToElectron('query', {
-          //   // target: e.target,
-          //   // path: e.path
-          //   target: cssPath(e.target),
-          //   path: e.path.map(path => cssPath(e.path))
-          // });
+          sendToElectron('query', {
+            // target: e.target,
+            // path: e.path
+            target: cssPath(e.target),
+            path: e.path.map(path => cssPath(e.path))
+          });
         } catch (err) {
           console.log(err)
         }
@@ -252,5 +245,10 @@ ipcMain.on('open-web', (event, arg) => {
 })
 
 ipcMain.on('query', function (event, value) {
+  childEventObj = event.sender
   mainWindowEventObj.send('selectDom', value)
+});
+
+ipcMain.on('dom-border-color', function (event, value) {
+  childEventObj.send('dom-border-color', value)
 });

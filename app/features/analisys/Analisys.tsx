@@ -4,8 +4,7 @@ import { useSelector } from 'react-redux'
 import { selectSite } from '../../store/modules/sitesSlice'
 import { ipcRenderer } from 'electron'
 
-import { CustomPicker } from 'react-color';
-import { Divider } from 'antd';
+import { Card } from 'antd';
 import {
   HomeOutlined,
   BarChartOutlined,
@@ -14,7 +13,7 @@ import {
 export default function Analisys({match, history}) {
   let [siteIdx, setSiteIdx] = useState(match?.params?.site)
   let [ domStructure, setDomStructure] = useState([])
-  let [ formHeight, setFormHeight ] = useState(window.innerHeight-(500+140))
+  let [ formHeight, setFormHeight ] = useState(window.innerHeight-(500))
   
   if (siteIdx === undefined || siteIdx === null) {
     history.push('/')
@@ -37,7 +36,7 @@ export default function Analisys({match, history}) {
         doms.push({
           label: 'testColumn',
           cssSelector: value.target,
-          color: '#ffffff'
+          color: '#0000ff'
         })
         setDomStructure(doms)
       }
@@ -45,7 +44,7 @@ export default function Analisys({match, history}) {
         doms.push({
           label: 'testColumn',
           cssSelector: value.target,
-          color: '#ff0000'
+          color: '#0000ff'
         })
         setDomStructure(doms)
       } 
@@ -60,6 +59,10 @@ export default function Analisys({match, history}) {
   const colorChangeHandle = (idx, color) => {
     let a = [...domStructure]
     a[idx].color = color
+    ipcRenderer.send('dom-border-color', {
+      selector: a[idx].cssSelector,
+      color: color
+    })
     setDomStructure(a)
   }
 
@@ -72,26 +75,21 @@ export default function Analisys({match, history}) {
       
       <div className="form">
         {domStructure.map((d, idx) => (
-          <div key={idx}>
-            <Divider 
-              style={{color: 'black', borderTop: `1px solid ${d.color}`}} 
-              orientation="left"
-            > </Divider>
-            
-            <h5>
-              이름: {d.label}
-            </h5>
-            <h5>
-              CSS SELECTOR : {d.cssSelector}
-            </h5>
-            <h5>
-              <input 
-                type="color" 
-                value={d.color}
-                onChange={(e) => colorChangeHandle(idx, e.target.value)}
-              />
-            </h5>
-          </div>
+          <Card 
+            title={d.label} 
+            // extra={<Link to={`/analisys/${idx}`}>More</Link>} 
+            style={{ width: 300, display: 'inline-block', margin: 15 }}
+            key={idx}
+          >
+            {/* <p>이름: {site.name}</p> */}
+            <p>이름: {d.label}</p>
+            <p>선택자: {d.cssSelector}</p>
+            <input 
+              type="color" 
+              value={d.color}
+              onChange={(e) => colorChangeHandle(idx, e.target.value)}
+            />
+          </Card>
         ))}
       </div>
     </div>
