@@ -79,7 +79,9 @@ const createWindow = async () => {
     show: false,
     width: 1024,
     height: 900,
-    frame: false,
+    // frame: false,
+    // transparent: true,
+    titleBarStyle: 'hidden',
     webPreferences:
       (process.env.NODE_ENV === 'development' ||
         process.env.E2E_BUILD === 'true') &&
@@ -175,7 +177,7 @@ ipcMain.on('open-web', (event, arg) => {
   mainWindow && mainWindow.setBrowserView(child)
   let size = mainWindow && mainWindow.getSize()
   let x = 50
-  let y = 400
+  let y = 500
   let width =size.length && size[0] || 1024
   let height =size.length && size[1] - y || 500
 

@@ -13,7 +13,7 @@ import {
 export default function Analisys({match, history}) {
   let [siteIdx, setSiteIdx] = useState(match?.params?.site)
   let [ domStructure, setDomStructure] = useState([])
-  let [ formHeight, setFormHeight ] = useState(window.innerHeight-(500 + 35))
+  let [ formHeight, setFormHeight ] = useState(window.innerHeight-(400 + 60 ))
   
   if (siteIdx === undefined || siteIdx === null) {
     history.push('/')

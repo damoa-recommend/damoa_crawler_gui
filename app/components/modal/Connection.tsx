@@ -13,9 +13,9 @@ const { Option } = Select;
 
 export default function Connection(props: any): JSX.Element {
   let [ name, setName ] = useState('')
-  let [ beforeUrl, setBeforeUrl ] = useState('')
+  let [ beforeUrl, setBeforeUrl ] = useState('http://')
   let [ url, setUrl ] = useState('')
-  let [ afterUrl, setAfterUrl ] = useState('')
+  let [ afterUrl, setAfterUrl ] = useState('.com')
   let [ desc, setDesc ] = useState('')
 
   let [loading, setLoading] = useState(false)
@@ -59,7 +59,6 @@ export default function Connection(props: any): JSX.Element {
     <Select defaultValue=".com" className="select-after" value={afterUrl} onChange={v => setAfterUrl(v)}>
       <Option value=".com">.com</Option>
       <Option value=".co.kr">.co.kr</Option>
-      <Option value=".cn">.cn</Option>
       <Option value=".org">.org</Option>
     </Select>
   );

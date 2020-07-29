@@ -13,7 +13,7 @@ const siteSlice = createSlice({
   reducers: {
     add: (state, action) => {
       try {
-        let payload = action.payload
+        let payload:{url: string, name: string, desc: string} = action.payload
         state.push(payload)
         // state.push(payload)
     
