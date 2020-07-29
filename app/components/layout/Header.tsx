@@ -1,8 +1,12 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Layout } from 'antd';
+const { Header } = Layout;
 
-export default function Header(): JSX.Element {
+
+export default function TopHeader(): JSX.Element {
   return (
-    <div></div>
+    <Layout>
+      <Header className="header" style={{height: 36, border: 0}}> </Header>
+    </Layout>
   )
 }

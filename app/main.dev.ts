@@ -79,6 +79,7 @@ const createWindow = async () => {
     show: false,
     width: 1024,
     height: 900,
+    frame: false,
     webPreferences:
       (process.env.NODE_ENV === 'development' ||
         process.env.E2E_BUILD === 'true') &&
@@ -159,6 +160,7 @@ app.on('activate', () => {
 });
 
 ipcMain.on('open-web', (event, arg) => {
+  console.log(mainWindow && mainWindow.getSize())
   mainWindowEventObj = event.sender
   // event.returnValue = 'pong'
   if (!mainWindow) {
@@ -171,10 +173,13 @@ ipcMain.on('open-web', (event, arg) => {
     }
   })
   mainWindow && mainWindow.setBrowserView(child)
-  let width =1024
-  let height =500
+  let size = mainWindow && mainWindow.getSize()
+  let x = 50
+  let y = 400
+  let width =size.length && size[0] || 1024
+  let height =size.length && size[1] - y || 500
 
-  child.setBounds({ x: 50, y: 400, width: width-50, height })
+  child.setBounds({ x, y, width: width-x, height })
  
   child.webContents.loadURL(arg.url || 'https://www.naver.com')
   

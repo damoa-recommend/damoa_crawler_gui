@@ -8,6 +8,7 @@ import Routes from '../Routes';
 import { Layout } from 'antd';
 
 import LeftNav from '../components/layout/LeftNav'
+import Header from '../components/layout/Header'
 
 const { Content } = Layout;
 
@@ -18,6 +19,8 @@ type Props = {
 
 const Root = ({ store, history }: Props) => (
   <Provider store={store}>
+    <Header />
+    
     <Layout>
       <ConnectedRouter history={history}>
         <LeftNav />
