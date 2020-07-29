@@ -12,13 +12,13 @@ import styles from './Home.css';
 import routes from '../constants/routes.json';
 import Connection from './modal/Connection'
 
-import { selectSite } from '../store/modules/sitesSlice'
+import { selectSites } from '../store/modules/sitesSlice'
 
 export default function Home(): JSX.Element {
   let [ visible, setVisible ] = useState(false)
 
-  let sites = useSelector(selectSite)
-
+  let sites = useSelector(selectSites)
+  useEffect(() => {console.log('[RENDER] HOME')}, [])
   return (
     <div className={styles.container} data-tid="container">
       <Connection visible={visible} setVisible={setVisible} />
@@ -41,7 +41,7 @@ export default function Home(): JSX.Element {
             <Card 
               title={site.name} 
               extra={<Link to={`/analisys/${idx}`}>More</Link>} 
-              style={{ width: 300, display: 'inline-block', margin: 15 }}
+              style={{ width: '32%', display: 'inline-block', margin: 15 }}
               key={idx}
             >
               <p>이름: {site.name}</p>

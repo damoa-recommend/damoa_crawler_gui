@@ -1,25 +1,37 @@
-import React, { useState, useEffect, useCallback } from 'react'
-import { useSelector } from 'react-redux'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 
-import { selectSite } from '../../store/modules/sitesSlice'
+import { selectSites, select } from '../../store/modules/sitesSlice'
 import { ipcRenderer } from 'electron'
 
 import { Card } from 'antd';
 import {
   HomeOutlined,
-  BarChartOutlined,
 } from '@ant-design/icons';
 
-export default function Analisys({match, history}) {
-  let [siteIdx, setSiteIdx] = useState(match?.params?.site)
-  let [ domStructure, setDomStructure] = useState([])
-  let [ formHeight, setFormHeight ] = useState(window.innerHeight-(400 + 60 ))
+function Analisys({match}) {
   
-  if (siteIdx === undefined || siteIdx === null) {
+  let [ siteIdx, setSiteIdx ] = useState(match?.params?.site)
+  let [ domStructure, setDomStructure ] = useState([])
+  let [ formHeight, setFormHeight ] = useState(window.innerHeight-(400 + 60 ))
+
+  let dispatch = useDispatch()
+  if (siteIdx === undefined || siteIdx === null || siteIdx === '') {
     history.push('/')
   }
 
-  let sites:{url: string, name: string, desc: string}[] = useSelector(selectSite)
+  useEffect(() => {
+    console.log(siteIdx)
+  }, [siteIdx])
+
+  useEffect(() => {
+    console.log(123)
+    dispatch(select({
+      selectedSiteIdx: siteIdx && siteIdx || -1
+    }))
+  }, [])
+
+  let sites:{url: string, name: string, desc: string}[] = useSelector(selectSites)
   
   let getDomStructure = useCallback(() => domStructure, [domStructure])
 
@@ -78,7 +90,7 @@ export default function Analisys({match, history}) {
           <Card 
             title={d.label} 
             // extra={<Link to={`/analisys/${idx}`}>More</Link>} 
-            style={{ width: 300, display: 'inline-block', margin: 15 }}
+            style={{ width: '30%', display: 'inline-block', margin: 15 }}
             key={idx}
           >
             {/* <p>이름: {site.name}</p> */}
@@ -95,3 +107,5 @@ export default function Analisys({match, history}) {
     </div>
   );
 }
+
+export default React.memo(Analisys)

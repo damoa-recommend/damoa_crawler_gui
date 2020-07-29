@@ -1,5 +1,6 @@
 {
   "HOME": "/",
   "COUNTER": "/counter",
-  "ANALISYS": "/analisys/:site"
+  "ANALISYS": "/analisys/:site",
+  "NO_SELECT_ANALISYS": "/analisys"
 }

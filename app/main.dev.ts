@@ -43,6 +43,8 @@ let mainWindowEventObj:any = null
 let child:BrowserView | null = null;
 let childEventObj:any = null;
 
+let prevUrl: string | null = ''
+
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
   sourceMapSupport.install();
@@ -168,6 +170,12 @@ ipcMain.on('open-web', (event, arg) => {
   if (!mainWindow) {
     return
   }
+  if (prevUrl === arg.url) {
+    return
+  }
+
+  prevUrl = arg.url
+  
   child = new BrowserView({
     webPreferences: {
       nodeIntegration: false,
@@ -185,7 +193,8 @@ ipcMain.on('open-web', (event, arg) => {
  
   child.webContents.loadURL(arg.url || 'https://www.naver.com')
   
-  child.webContents.openDevTools()
+  // child.webContents.openDevTools()
+
   child.webContents.executeJavaScript(`
     var cssPath = function(el) {
       if (!(el instanceof Element)) 
