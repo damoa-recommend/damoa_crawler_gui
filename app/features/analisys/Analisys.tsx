@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
+import { RouteComponentProps } from 'react-router-dom'
+
 import { selectSites, select } from '../../store/modules/sitesSlice'
 import { ipcRenderer } from 'electron'
 
@@ -9,8 +11,7 @@ import {
   HomeOutlined,
 } from '@ant-design/icons';
 
-function Analisys({match}) {
-  
+const Analisys: React.FC<RouteComponentProps> =({match, history}) => {
   let [ siteIdx, setSiteIdx ] = useState(match?.params?.site)
   let [ domStructure, setDomStructure ] = useState([])
   let [ formHeight, setFormHeight ] = useState(window.innerHeight-(400 + 60 ))
@@ -42,7 +43,7 @@ function Analisys({match}) {
 
   useEffect(() => {
     ipcRenderer.on('selectDom', (event, value) => {
-      let doms = [...getDomStructure()]
+      let doms: {label: string, namcssSelectore: string, color: string}[] = [...getDomStructure()]
       
       if (!doms.length) {
         doms.push({
@@ -68,8 +69,8 @@ function Analisys({match}) {
     }
   }, [getDomStructure()])
 
-  const colorChangeHandle = (idx, color) => {
-    let a = [...domStructure]
+  const colorChangeHandle = (idx: number, color: string) => {
+    let a: {color: string, cssSelector: string}[] = [...domStructure]
     a[idx].color = color
     ipcRenderer.send('dom-border-color', {
       selector: a[idx].cssSelector,
@@ -86,7 +87,7 @@ function Analisys({match}) {
       </div>
       
       <div className="form">
-        {domStructure.map((d, idx) => (
+        {domStructure.map((d: {label: string, color: string, cssSelector: string}, idx) => (
           <Card 
             title={d.label} 
             // extra={<Link to={`/analisys/${idx}`}>More</Link>} 

@@ -6,13 +6,12 @@ const siteSlice = createSlice({
   initialState: {
     selectedSiteIdx: -1,
     sites: [
-      // {
-      //   url: 'http://www.naver.com',
-      //   name: 'naver',
-      //   desc: 'naver desc'
-      // }
+      {
+        url: 'http://www.naver.com',
+        name: 'naver',
+        desc: 'naver desc'
+      }
     ],
-    
   },
   reducers: {
     add: (state, action) => {
